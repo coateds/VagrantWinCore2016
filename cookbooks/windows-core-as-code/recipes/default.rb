@@ -14,3 +14,6 @@ end
 ps_demo_script = <<-EOH
   Set-ItemProperty -path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -name Shell -value 'PowerShell.exe -NoExit'
 EOH
+
+ps = powershell_out(ps_demo_script)
+puts ps.stdout.chop.to_s
