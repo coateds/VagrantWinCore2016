@@ -28,6 +28,16 @@ Vagrant.configure("2") do |config|
     # not necessary for jacqinthebox, but probably would not change anything
     # required for CorePlusGA
     vb.gui = true
+    vb.memory = 3072
+    vb.cpus = 2
+
+    config.vm.network "private_network", type: "dhcp"
+    
+    # Time Sync appears to be a time zone problem
+    # vb.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 1000 ]    
+
+    vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    
   end
 
   config.vm.provision "chef_zero" do |chef|
@@ -37,5 +47,6 @@ Vagrant.configure("2") do |config|
     chef.roles_path = "roles"
 
     chef.add_recipe "windows-core-as-code::default"
+    chef.add_recipe "windows-core-as-code::install-iis"
   end
 end
