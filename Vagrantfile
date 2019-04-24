@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
     
     # not necessary for jacqinthebox, but probably would not change anything
     # required for CorePlusGA
-    vb.gui = true
+    # vb.gui = true
     vb.memory = 3072
     vb.cpus = 2
 

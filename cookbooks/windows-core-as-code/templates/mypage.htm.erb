@@ -1,11 +1,90 @@
 <html>
-<head></head>
+<head>
+  <title>Info page for 172.28.128.12</title>
+  <link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
 <body>
-<!-- A Table of Ohai information -->
-The information in the top half of this page is gathered from Ohai. Simply expand automatic attributes in line with the html.
-<br><br>
+<!-- Documentation -->
+<h1 class = "myh1">Documentation for VagrantWinCore2016</h1>
+<p>It occurs to me that this could be a good place for (partly) dynamic documentation. In this project, I am building a 
+Windows Core 2016 server to run as a VM on CentOS 7, VirtualBox/Vagrant.</p>
 
-<h1>Ohai Information For <%= node['hostname'] %></h1>
+<p>My current experiment is to use "PowerShell Server" from nsoftware to run the Win 2016 Core VM virtually headless. That is, without
+a gui. (Remove `vb.gui = true` from Vagrantfile) The software allows connection to a PowerShell shell via SSH. Just run `ssh vagrant@172.28.128.12`
+from a terminal in the CentOS host.
+</p>
+
+<p>On first look, there appears to be no way to run PowerShell Server as a simple service. As a quick work around, start the "service" at startup of
+the server using instructions found here:  https://devblogs.microsoft.com/scripting/use-powershell-to-create-job-that-runs-at-startup/
+</p>
+
+<div class="codebox">
+  <code>  
+    $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:30
+    Register-ScheduledJob -Trigger $trigger -FilePath C:\Users\Administrator\start-poshserver.ps1 -Name StartPowerShellServer
+  </code>
+</div>
+<br><br>
+<div class="codebox">
+  <code>   
+    start-poshserver.ps1:
+    & 'C:\Program Files\nsoftware\PowerShell Server 2016\powershellserver.exe' /servicestart
+  </code>
+</div>
+<p>A note on prepping the Windows core box: The current VB/VG image is not patched and seems to be unstable.
+Patching helps this a lot, but cannot be done via xrdp. Run the 1G patches individually by calling the patch
+explicitly:  `install-windowsupdate -title KB4103720`</p>
+
+<p>The CentOS host has also be loaded with xrdp so that I do not need to be at the console of that host. This
+seems to work well after the core guest has been patched.
+</p>
+
+<br><hr><br>
+
+<!-- Chef Cookbooks and Recipes -->
+<h1 class = "myh1">Chef Configurations</h1>
+<h2 class = "myh2">default recipe</h2>
+<p>The default recipe:</p>
+<ul>
+  <li>Installs Chocolatey</li>
+  <li>Installs Git (via chocolatey)</li>
+</ul>
+
+<h2 class = "myh2">install-iis recipe</h2>
+<p>The install-iis recipe is responsible for creating this page. First it ensures IIS is configured. 
+The formatting is via mystyle.css and the page itself is a template: mypage.htm.erb.</p>
+
+<div class="codebox">
+  <code>   
+    windows_feature 'IIS-WebServerRole' do
+      action :install
+      install_method :windows_feature_dism
+    end
+    
+    service 'w3svc' do
+      action [:enable, :start]
+    end
+    
+    node.override['install-iis-serverinfo']['infopage-path'] = 'c:/inetpub/wwwroot'
+    
+    template "#{node['install-iis-serverinfo']['infopage-path']}/mypage.htm" do
+      source 'mypage.htm.erb'
+    end
+    
+    cookbook_file "#{node['install-iis-serverinfo']['infopage-path']}/mystyle.css" do
+      source 'mystyle.css'
+    end
+  </code>
+</div>
+
+<p>Finally it assigns the output of multiple powershell scripts to variables that are substituted in the
+bottom section of this page</p>
+
+<br><hr><br>
+
+<!-- A Table of Ohai information -->
+<h1 class = "myh1">Ohai Information For <%= node['hostname'] %></h1>
+The information in the top half of this page is gathered from Ohai. Simply expand automatic attributes in line with the html.
 <table cellspacing=2 cellpadding=2>
   <tr>
     <td>FQDN</td><td><%= node['fqdn'] %></td>
@@ -57,9 +136,8 @@ The information in the top half of this page is gathered from Ohai. Simply expan
   <td>memory:</td><td><%= node['memory']['total'] %></td>
 </tr>
 </table>
-<br>
 
-<hr><br>
+<br><hr><br>
 
 These tables consume the output of PowerShell commands. The powershell_out command and its optional accompanying script block can be inline within the recipe, or encapsulated within a ruby function (def block) and even placed in a library file. Most of the PowerShell processing is in the libraries\helper.rb file.
 <br><br>

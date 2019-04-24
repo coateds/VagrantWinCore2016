@@ -13,6 +13,10 @@ template "#{node['install-iis-serverinfo']['infopage-path']}/mypage.htm" do
   source 'mypage.htm.erb'
 end
 
+cookbook_file "#{node['install-iis-serverinfo']['infopage-path']}/mystyle.css" do
+  source 'mystyle.css'
+end
+
 node.default['install-iis-serverinfo']['ps-version'] = ps_ver
 node.default['install-iis-serverinfo']['ps-network'] = ps_net
 node.default['install-iis-serverinfo']['ps-service'] = ps_service
