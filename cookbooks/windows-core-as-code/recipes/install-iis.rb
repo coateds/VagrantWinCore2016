@@ -28,3 +28,10 @@ node.default['install-iis-serverinfo']['ping-domain'] = ps_pingdomain node['doma
 # Get a list of Chocolatey packages
 node.default['install-iis-serverinfo']['choco-list'] = ps_chocolist
 node.default['install-iis-serverinfo']['choco-outdated'] = ps_chocooutdated
+
+# Get the Windows update module list
+node.default['install-iis-serverinfo']['windows-update'] = ps_winupdatemod
+
+node.default['install-iis-serverinfo']['default-shell'] = ps_defaultshell
+node.default['install-iis-serverinfo']['get-timezone'] = ps_get_timezone
+node.default['install-iis-serverinfo']['get-updatetask'] = ps_update_task

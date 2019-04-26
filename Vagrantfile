@@ -20,6 +20,10 @@ Vagrant.configure("2") do |config|
   config.winrm.username = "vagrant"
   config.winrm.password = "vagrant"
 
+  # http://vagrant.1086180.n5.nabble.com/The-host-path-of-the-shared-folder-is-missing-td12113.html
+  # config.vm.synced_folder "/home/coateds/VagrantWinCore2016/hwwwroot", "smb:\\172.28.128.12\\c$\\inetpub", disabled: false, type: "smb", smb_host: "172.28.128.12", smb_username: "vagrant", smb_password: "vagrant", mount_options: ['vers=3.0']
+  # config.vm.synced_folder "/home/coateds/VagrantWinCore2016/hwwwroot", "/scriptees", type: "virtualbox"
+
   config.vm.provider "virtualbox" do |vb|
     # install a DVD drive and insert the GA iso
     # it seems to persist even when this line is commented out?
@@ -27,7 +31,7 @@ Vagrant.configure("2") do |config|
     
     # not necessary for jacqinthebox, but probably would not change anything
     # required for CorePlusGA
-    # vb.gui = true
+    vb.gui = true
     vb.memory = 3072
     vb.cpus = 2
 

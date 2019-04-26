@@ -46,8 +46,36 @@ seems to work well after the core guest has been patched.
 <h2 class = "myh2">default recipe</h2>
 <p>The default recipe:</p>
 <ul>
+  <li>Ensures c:\scripts folder</li>  
   <li>Installs Chocolatey</li>
+    In just getting a text output from the Choco command, there is no simple way to output as html. At some point it might be useful to create a Ruby function to convert a list of strings into a simple html table.
+    <table>
+    <th colspan="100">Chocolatey Packages</th>
+    <tr>
+      <td>Installed:</td>
+      <td><%= node['install-iis-serverinfo']['choco-list'] %></td>
+    </tr>
+    <tr>
+      <td>Outdated:</td>
+      <td><%= node['install-iis-serverinfo']['choco-outdated'] %></td>
+    </tr>
+    </table>
   <li>Installs Git (via chocolatey)</li>
+  <li>Installs PSWindowsUpdate Module</li>
+  <%= node.default['install-iis-serverinfo']['windows-update'] %>
+  <li>Sets default shell to PowerShell</li>
+  Default Shell = <%= node.default['install-iis-serverinfo']['default-shell'] %><br>
+  (HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\shell)
+  <li>Sets timezone</li>
+  (Get-Timezone).Id = <%= node.default['install-iis-serverinfo']['get-timezone'] %>
+  <li>Creates 'windows-update' Scheduled Task
+  Update Task: <%= node.default['install-iis-serverinfo']['get-updatetask'] %>
+  <table cellspacing=2 cellpadding=2>
+    <th colspan="100" style="text-align: left;">Updates</th>
+    <tr>
+      <td>Last Update:</td><td><%= node['install-iis-serverinfo']['last-update'] %></td>
+    </tr>
+  </table>
 </ul>
 
 <h2 class = "myh2">install-iis recipe</h2>
@@ -85,7 +113,10 @@ bottom section of this page</p>
 <!-- A Table of Ohai information -->
 <h1 class = "myh1">Ohai Information For <%= node['hostname'] %></h1>
 The information in the top half of this page is gathered from Ohai. Simply expand automatic attributes in line with the html.
-<table cellspacing=2 cellpadding=2>
+<table>
+  <th colspan="100">
+    A Table of Ohai information
+  <th>
   <tr>
     <td>FQDN</td><td><%= node['fqdn'] %></td>
   </tr>
@@ -105,7 +136,7 @@ The information in the top half of this page is gathered from Ohai. Simply expan
 <br>
 
 <table cellspacing=2 cellpadding=2>
-<th>Chef Information</th>
+<th colspan="100">Chef Information</th>
 <tr>
   <td>Recipes:</td><td><%= node['recipes'] %></td>
 </tr>
@@ -116,7 +147,7 @@ The information in the top half of this page is gathered from Ohai. Simply expan
 <br>
 
 <table cellspacing=2 cellpadding=2>
-<th>System Stats</th>
+<th colspan="100">System Stats</th>
 <tr>
   <td>cpu:</td><td><%= node['cpu']['0']['model_name'] %></td>
 </tr>
@@ -155,7 +186,7 @@ Any PowerShell command that returns a table of information can be piped to Conve
 <br><br>
 
 <table cellspacing=2 cellpadding=2>
-<th>PowerShell Adapter Info</th>
+<th colspan="100">PowerShell Adapter Info</th>
 <tr>
   <td>NICS</td><td><%= node['install-iis-serverinfo']['ps-network'] %></td>
 </tr>
@@ -164,7 +195,7 @@ Any PowerShell command that returns a table of information can be piped to Conve
 <br><br>
 
 <table cellspacing=2 cellpadding=2>
-<th>Auto Services not Running</th>
+<th colspan="100">Auto Services not Running</th>
 <tr>
   <td>Services:</td><td><%= node['install-iis-serverinfo']['ps-service'] %></td>
 </tr>
@@ -172,17 +203,19 @@ Any PowerShell command that returns a table of information can be piped to Conve
 
 <br><br>
 
+<!--
 <table cellspacing=2 cellpadding=2>
-<th style="text-align: left;">Updates</th>
+<th colspan="100" style="text-align: left;">Updates</th>
 <tr>
   <td>Last Update:</td><td><%= node['install-iis-serverinfo']['last-update'] %></td>
 </tr>
 </table>
 
 <br><br>
+-->
 
 <table cellspacing=2 cellpadding=2>
-<th style="text-align: left;">NTP, System and Delta</th>
+<th colspan="100" style="text-align: left;">NTP, System and Delta</th>
 <tr>
   <td>NTP Time:</td><td><%= node['install-iis-serverinfo']['ntp-obj']['NTPTime'] %></td>
 </tr>
@@ -198,8 +231,9 @@ Any PowerShell command that returns a table of information can be piped to Conve
 
 In just getting a text output from the Choco command, there is no simple way to output as html. At some point it might be useful to create a Ruby function to convert a list of strings into a simple html table.
 
+<!--
 <table cellspacing=2 cellpadding=2>
-<th>Chocolatey Packages</th>
+<th colspan="100">Chocolatey Packages</th>
 <tr>
   <td>Installed:</td>
   <td><%= node['install-iis-serverinfo']['choco-list'] %></td>
@@ -211,6 +245,7 @@ In just getting a text output from the Choco command, there is no simple way to 
 </table>
 
 <br><br>
+-->
 
 Pings the domain... Indicates which DNS server responds
 <%= node['install-iis-serverinfo']['ping-domain'] %>

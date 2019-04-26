@@ -93,6 +93,28 @@ module VagrantWinCore2016
       EOH
       powershell_out(ps_choco_outdated_script).stdout.chop.to_s
     end
+
+    def ps_winupdatemod
+      ps_winupdate_script = <<-EOH
+      Get-Module -ListAvailable -Name PSWindowsUpdate | Select-Object ModuleType, Version, Name | ConvertTo-Html
+      EOH
+      powershell_out(ps_winupdate_script).stdout.chop.to_s
+    end
+
+    def ps_defaultshell
+      ps_defaultshell_script = <<-EOH
+      (Get-ItemProperty -path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -name shell).shell
+      EOH
+      powershell_out(ps_defaultshell_script).stdout.chop.to_s
+    end
+
+    def ps_get_timezone
+      powershell_out('(Get-TimeZone).Id').stdout.chop.to_s
+    end
+
+    def ps_update_task
+      powershell_out('Get-ScheduledTask -taskname windows-update | Get-ScheduledTaskInfo | Select-Object TaskName, LastRunTime, NextRunTime | ConvertTo-Html').stdout.chop.to_s
+    end
   end
 end
 

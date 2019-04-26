@@ -8,11 +8,36 @@
   color: rgb(0, 90, 255);
   }
 
-.codebox {
+.codebox 
+  {
   border:1px solid black;
-  background-color:rgb(249, 238, 255);
+  background-color: rgb(185, 253, 216);
   white-space: pre-line;
   padding:10px;
   font-size:0.9em;
   display: inline-block;
-}
+  }
+
+.savedcolor
+  {
+  background-color: rgb(249, 238, 255);
+  }
+
+td
+  {
+    border-bottom: 1px solid black;
+    padding-right: 10px;
+  }
+
+table
+  {
+    background-color: rgb(185, 253, 216);
+  }
+
+th
+  {
+    background-color: rgb(0, 90, 255);
+    height: 40px;
+    column-span: 10;
+    border: 1px solid rgb(0, 90, 255);
+  }

@@ -1,4 +1,4 @@
-directory "c:/scriptees"
+directory "c:/scripts"
 
 include_recipe 'chocolatey::default'
 
